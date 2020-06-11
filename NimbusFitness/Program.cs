@@ -1,5 +1,7 @@
 ﻿using System;
 using NimbusFitness.BL;
+using NimbusFitness.BL.Controller;
+using NimbusFitness.BL.Model;
 
 namespace NimbusFitness
 {
@@ -13,23 +15,80 @@ namespace NimbusFitness
             var name = Console.ReadLine().Trim();
 
             UserController userController = new UserController(name);
+            EatingController eatingController = new EatingController(userController.CurrentUser);
 
             if (userController.IsNewUser)
             {
-                Console.WriteLine("Введите Ваш гендер: ");
-                var gender = Console.ReadLine().Trim();
-
-                DateTime birthDate = TakeBirthDate();
-
-                var weight = TakeWeight();
-
-                var height = TakeHeight();
-
-                userController.SetNewUserData(name, gender, birthDate, weight, height);
+                SignUp(userController, name);
             }
 
-            Console.WriteLine(userController.CurrentUser);
+            Console.WriteLine("Что вы хотите сделать?");
+            Console.WriteLine("E - ввести приём пищи");
+
+            var key = Console.ReadKey();
+            Console.WriteLine();
+
+            if (key.Key == ConsoleKey.E)
+            {
+                var foods = EnterEating();
+                eatingController.Add(foods.Food, foods.Weight);
+
+                Console.WriteLine("Суммарная порция: ");
+                foreach (var item in eatingController.Eating.Foods)
+                {
+                    Console.WriteLine($"\t{item.Key} - {item.Value}");
+                }
+            }
+
             Console.ReadLine();
+        }
+
+        private static void SignUp(UserController userController, string name)
+        {
+            Console.WriteLine("Введите Ваш гендер: ");
+            var gender = Console.ReadLine().Trim();
+
+            DateTime birthDate = TakeBirthDate();
+
+            var weight = TakeWeight();
+
+            var height = TakeHeight();
+
+            userController.SetNewUserData(name, gender, birthDate, weight, height);
+        }
+
+        private static (Food Food, double Weight) EnterEating()
+        {
+            Console.Write("Введите имя продукта: ");
+            var foodName = Console.ReadLine();
+
+            Console.Write("Введите калорийность порции (на 100 грамм): ");
+            double foodCalories = ParseDouble();
+
+            Console.Write("Введите кол-во углеводов в порции (на 100 грамм): ");
+            double foodCarbohydrates = ParseDouble();
+
+            Console.Write("Введите кол-во жиров в порции (на 100 грамм): ");
+            double foodFats = ParseDouble();
+
+            Console.Write("Введите кол-во белков в порции (на 100 грамм): ");
+            double foodProteins = ParseDouble();
+
+            // Никому не нужный вес
+            Console.Write("Введите вес порции (в граммах): ");
+            double foodWeight = ParseDouble();
+
+            return (new Food(foodName, foodCalories, foodCarbohydrates, foodFats, foodProteins), foodWeight);
+        }
+
+        private static double ParseDouble()
+        {
+            double doub;
+            while (!double.TryParse(Console.ReadLine(), out doub))
+            {
+                Console.Write("Вы ввели некорректное число. Попробуйте ввести снова: ");
+            }
+            return doub;
         }
 
         private static DateTime TakeBirthDate()

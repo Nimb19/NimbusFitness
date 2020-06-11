@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
+using NimbusFitness.BL.Controller;
 using NimbusFitness.BL.Model;
 
 namespace NimbusFitness.BL
@@ -10,8 +11,10 @@ namespace NimbusFitness.BL
     /// <summary>
     /// Контроллер пользователя.
     /// </summary>
-    public class UserController
+    public class UserController : ControllerBase
     {
+        private const string USERS_FILE_NAME = "users.dat";
+
         /// <summary>
         /// Пользователь.
         /// </summary>
@@ -47,8 +50,6 @@ namespace NimbusFitness.BL
                 CurrentUser = new User(userName);
                 IsNewUser = true;
             }
-
-            Save();
         }
 
         /// <summary>
@@ -79,15 +80,7 @@ namespace NimbusFitness.BL
         /// <returns> Список пользователей. </returns>
         private List<User> GetUserData()
         {
-            var binaryFormatter = new BinaryFormatter();
-
-            using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
-            {
-                if (fs.Length > 0 && binaryFormatter.Deserialize(fs) is List<User> users)
-                    return users;
-                else
-                    return new List<User>();
-            }
+            return Load<List<User>>(USERS_FILE_NAME) ?? new List<User>();
         }
 
         /// <summary>
@@ -95,12 +88,7 @@ namespace NimbusFitness.BL
         /// </summary>
         public void Save()
         {
-            var binaryFormatter = new BinaryFormatter();
-
-            using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
-            {
-                binaryFormatter.Serialize(fs, Users);
-            }
+            base.Save(USERS_FILE_NAME, Users);
         }
     }
 }

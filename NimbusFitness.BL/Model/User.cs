@@ -33,6 +33,9 @@ namespace NimbusFitness.BL.Model
         /// </summary>
         public double Height { get; set; }
 
+        /// <summary>
+        /// Возраст.
+        /// </summary>
         public int Age
         {
             get
