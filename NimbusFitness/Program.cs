@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using NimbusFitness.BL;
 using NimbusFitness.BL.Controller;
 using NimbusFitness.BL.Model;
@@ -7,6 +8,10 @@ namespace NimbusFitness
 {
     class Program
     {
+        static UserController userController;
+        static EatingController eatingController;
+        static ExerciseController exerciseController;
+
         static void Main(string[] args)
         {
             Console.WriteLine("Вас приветствует приложение NimbusFitness!");
@@ -14,33 +19,100 @@ namespace NimbusFitness
             Console.WriteLine("Введите имя пользователя:");
             var name = Console.ReadLine().Trim();
 
-            UserController userController = new UserController(name);
-            EatingController eatingController = new EatingController(userController.CurrentUser);
+            userController = new UserController(name);
 
             if (userController.IsNewUser)
             {
                 SignUp(userController, name);
             }
 
-            Console.WriteLine("Что вы хотите сделать?");
-            Console.WriteLine("E - ввести приём пищи");
+            Console.Clear();
 
-            var key = Console.ReadKey();
-            Console.WriteLine();
-
-            if (key.Key == ConsoleKey.E)
+            while (true)
             {
-                var foods = EnterEating();
-                eatingController.Add(foods.Food, foods.Weight);
+                Console.WriteLine(userController.CurrentUser.Name);
 
-                Console.WriteLine("Суммарная порция: ");
-                foreach (var item in eatingController.Eating.Foods)
+                Console.WriteLine("Что вы хотите сделать?");
+                Console.WriteLine("E - ввести приём пищи");
+                Console.WriteLine("А - ввести упражнение");
+                Console.WriteLine("C - очистить консоль");
+                Console.WriteLine("Q - выход");
+
+                var key = Console.ReadKey();
+                Console.WriteLine();
+
+                switch (key.Key)
                 {
-                    Console.WriteLine($"\t{item.Key} - {item.Value}");
+                    case ConsoleKey.E:
+                        eatingController = new EatingController(userController.CurrentUser);
+
+                        var foods = EnterEating();
+                        eatingController.Add(foods.Food, foods.Weight);
+
+                        Console.WriteLine("Суммарная порция: ");
+                        foreach (var item in eatingController.Eating.Foods)
+                        {
+                            Console.WriteLine($"\t{item.Key} - {item.Value}");
+                        }
+                        break;
+
+                    case ConsoleKey.A:
+                        exerciseController = new ExerciseController(userController.CurrentUser);
+
+                        var activity = EnterActivity();
+                        DateTime begin = ParseDateTime("Введите время, в которое вы начали делать упражнение");
+                        DateTime end = ParseDateTime("Введите время, в которое вы закончили делать упражнение");
+
+                        exerciseController.AddExercise(activity, begin, end);
+                        break;
+
+                    case ConsoleKey.C:
+                        Console.Clear();
+                        continue;
+
+                    case ConsoleKey.Q:
+                        Environment.Exit(0);
+                        break;
+
+                    default:
+                        Console.WriteLine("Вы ввели некорректный символ.\nПопробуйте снова. ");
+                        break;
                 }
+                Console.WriteLine();
+            }
+        }
+
+        private static DateTime ParseDateTime(string cwString)
+        {
+            Console.WriteLine(cwString + "(dd.mm.yyyy hh:mm:ss): ");
+
+            DateTime result;
+            while (!DateTime.TryParse(Console.ReadLine(), out result))
+            {
+                Console.Write("Вы ввели некорректную дату. Попробуйте ввести снова: ");
+            }
+            return result;
+        }
+
+        private static Activity EnterActivity()
+        {
+            Console.WriteLine("Введите название упражнения: ");
+            string nameActivity = Console.ReadLine().Trim();
+
+            double caloriesPerMin;
+            if (exerciseController.Activities.Any(x => x.Name == nameActivity))
+            {
+                caloriesPerMin = exerciseController.Activities.First(x => x.Name == nameActivity).CaloriesPerMinute;
+            }
+            else
+            {
+                Console.WriteLine("Введите количество уменьшения калорий в минуту: ");
+                caloriesPerMin = ParseDouble();
             }
 
-            Console.ReadLine();
+            Activity activity = new Activity(nameActivity, caloriesPerMin);
+            
+            return activity;
         }
 
         private static void SignUp(UserController userController, string name)
@@ -98,7 +170,7 @@ namespace NimbusFitness
             DateTime birthDate = default;
             while (true)
             {
-                if (DateTime.TryParse(Console.ReadLine().Trim(), out birthDate)) //TODO: Починить проверку
+                if (DateTime.TryParse(Console.ReadLine().Trim(), out birthDate)) // TODO: Починить проверку
                 {
                     DateTime checker;
                     DateTime.TryParse("00.00.1900", out checker);
