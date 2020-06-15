@@ -4,7 +4,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace NimbusFitness.BL.Controller
 {
-    class SerializeDataSaver : IDateSaver
+    class SerializeDataSaver : IDataSaver
     {
         public List<T> Load<T>() where T : class
         {

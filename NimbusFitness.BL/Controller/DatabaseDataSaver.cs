@@ -5,7 +5,7 @@ using NimbusFitness.BL.Model;
 
 namespace NimbusFitness.BL.Controller
 {
-    public class DatabaseDataSaver : IDateSaver
+    public class DatabaseDataSaver : IDataSaver
     {
         public List<T> Load<T>() where T : class
         {

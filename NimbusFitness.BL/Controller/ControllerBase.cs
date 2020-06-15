@@ -7,7 +7,7 @@ namespace NimbusFitness.BL.Controller
 {
     public abstract class ControllerBase
     {
-        private readonly IDateSaver dateSaver = new SerializeDataSaver();
+        private readonly IDataSaver dateSaver = new SerializeDataSaver();
 
         protected void Save<T>(List<T> item) where T : class
         {
