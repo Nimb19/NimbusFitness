@@ -12,6 +12,8 @@ namespace NimbusFitness.BL.Model
     [Serializable]
     public class Food
     {
+        public int Id { get; set; }
+
         /// <summary>
         /// Название продукта.
         /// </summary>
@@ -20,22 +22,24 @@ namespace NimbusFitness.BL.Model
         /// <summary>
         /// Калории на 1 грамм.
         /// </summary>
-        public double Calories { get; }
+        public double Calories { get; set; }
 
         /// <summary>
         /// Углеводы на 1 грамм.
         /// </summary>
-        public double Carbohydrates { get; }
+        public double Carbohydrates { get; set; }
 
         /// <summary>
         /// Жиры на 1 грамм.
         /// </summary>
-        public double Fats { get; }
+        public double Fats { get; set; }
 
         /// <summary>
         /// Белки на 1 грамм.
         /// </summary>
-        public double Proteins { get; }
+        public double Proteins { get; set; }
+
+        public Food() { }
 
         public Food(string name) : this(name, 1, 1, 1, 1)
         {

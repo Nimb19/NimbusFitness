@@ -13,8 +13,6 @@ namespace NimbusFitness.BL
     /// </summary>
     public class UserController : ControllerBase
     {
-        private const string USERS_FILE_NAME = "users.dat";
-
         /// <summary>
         /// Пользователь.
         /// </summary>
@@ -43,7 +41,7 @@ namespace NimbusFitness.BL
 
             Users = GetUserData();
 
-            CurrentUser = Users.SingleOrDefault(u => u.Name == userName);
+            CurrentUser = Users.FirstOrDefault(u => u.Name == userName);
 
             if (CurrentUser == null)
             {
@@ -80,7 +78,7 @@ namespace NimbusFitness.BL
         /// <returns> Список пользователей. </returns>
         private List<User> GetUserData()
         {
-            return Load<List<User>>(USERS_FILE_NAME) ?? new List<User>();
+            return Load<User>();
         }
 
         /// <summary>
@@ -88,7 +86,7 @@ namespace NimbusFitness.BL
         /// </summary>
         public void Save()
         {
-            base.Save(USERS_FILE_NAME, Users);
+            base.Save(Users);
         }
     }
 }

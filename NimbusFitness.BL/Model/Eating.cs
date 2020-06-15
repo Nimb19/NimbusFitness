@@ -10,20 +10,26 @@ namespace NimbusFitness.BL.Model
     [Serializable]
     public class Eating
     {
+        public int Id { get; set; }
+
         /// <summary>
         /// Момент приёма пищи.
         /// </summary>
-        public DateTime Moment { get; }
+        public DateTime Moment { get; set; }
 
         /// <summary>
         /// Словарь съеденных продуктов.
         /// </summary>
-        public Dictionary<Food, double> Foods { get; }
+        public Dictionary<Food, double> Foods { get; set; }
+
+        public int UserId { get; set; }
 
         /// <summary>
         /// Пользователь, принимающий пищу.
         /// </summary>
-        public User User { get; }
+        public virtual User User { get; set; }
+
+        public Eating() { }
 
         public Eating(User user)
         {

@@ -8,20 +8,24 @@ namespace NimbusFitness.BL.Model
     [Serializable]
     public class User
     {
+        public int Id { get; set; }
+
         /// <summary>
         /// Имя.
         /// </summary>
         public string Name { get; set; }
 
+        public int GenderId { get; set; }
+
         /// <summary>
         /// Гендер.
         /// </summary>
-        public Gender Gender { get; set; }
+        public virtual Gender Gender { get; set; }
 
         /// <summary>
         /// Дата рождения.
         /// </summary>
-        public DateTime BirthDate { get; set; }
+        public DateTime BirthDate { get; set; } = DateTime.Now;
 
         /// <summary>
         /// Вес.
@@ -46,6 +50,8 @@ namespace NimbusFitness.BL.Model
                 return age;
             }
         }
+
+        public User() { }
 
         /// <summary>
         /// Создание пользователя.

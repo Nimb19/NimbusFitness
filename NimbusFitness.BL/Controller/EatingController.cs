@@ -9,12 +9,8 @@ namespace NimbusFitness.BL.Controller
 {
     public class EatingController : ControllerBase
     {
-        private const string FOODS_FILE_NAME = "foods.dat";
-        private const string EATINGS_FILE_NAME = "eatings.dat";
         private readonly User user;
-
         public List<Food> Foods { get; }
-
         public Eating Eating { get; }
 
         public EatingController(User user)
@@ -26,7 +22,7 @@ namespace NimbusFitness.BL.Controller
 
         public void Add(Food food, double weight)
         {
-            var product = Foods.SingleOrDefault(x => x.Name == food.Name);
+            var product = Foods.FirstOrDefault(x => x.Name == food.Name);
             if (product == null)
             {
                 Foods.Add(food);
@@ -42,18 +38,18 @@ namespace NimbusFitness.BL.Controller
 
         private Eating GetEating()
         {
-            return Load<Eating>(EATINGS_FILE_NAME) ?? new Eating(user);
+            return Load<Eating>().LastOrDefault() ?? new Eating(user);
         }
 
         private List<Food> GetAllFoods()
         {
-            return Load<List<Food>>(FOODS_FILE_NAME) ?? new List<Food>();
+            return Load<Food>();
         }
 
         private void Save()
         {
-            Save(FOODS_FILE_NAME, Foods);
-            Save(EATINGS_FILE_NAME, Eating);
+            Save(Foods);
+            Save(new List<Eating>() { Eating });
         }
     }
 }

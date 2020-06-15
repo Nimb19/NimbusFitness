@@ -44,7 +44,8 @@ namespace NimbusFitness
                 switch (key.Key)
                 {
                     case ConsoleKey.E:
-                        eatingController = new EatingController(userController.CurrentUser);
+                        if (eatingController == null)
+                            eatingController = new EatingController(userController.CurrentUser);
 
                         var foods = EnterEating();
                         eatingController.Add(foods.Food, foods.Weight);
@@ -57,7 +58,8 @@ namespace NimbusFitness
                         break;
 
                     case ConsoleKey.A:
-                        exerciseController = new ExerciseController(userController.CurrentUser);
+                        if (exerciseController == null)
+                            exerciseController = new ExerciseController(userController.CurrentUser);
 
                         var activity = EnterActivity();
                         DateTime begin = ParseDateTime("Введите время, в которое вы начали делать упражнение");
